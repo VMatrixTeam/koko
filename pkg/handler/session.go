@@ -33,6 +33,7 @@ func SessionHandler(sess ssh.Session) {
 		go handler.watchWinSizeChange()
 		targetAsset, ok := sess.Context().Value(model.ContextKeyTargetAsset).(*string)
 		if !ok || targetAsset == nil || *targetAsset == "" {
+			handler.displayBanner()
 			handler.Dispatch()
 		} else {
 			handler.searchOrProxy(*targetAsset)
@@ -85,7 +86,6 @@ func (h *interactiveHandler) Initial() {
 		go h.keepSessionAlive(time.Duration(conf.ClientAliveInterval) * time.Second)
 	}
 	h.assetLoadPolicy = strings.ToLower(conf.AssetLoadPolicy)
-	h.displayBanner()
 	h.winWatchChan = make(chan bool, 5)
 	h.firstLoadDone = make(chan struct{})
 	go h.firstLoadData()
