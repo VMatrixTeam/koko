@@ -38,13 +38,13 @@ func SessionHandler(sess ssh.Session) {
 		} else {
 			if !handler.searchOrProxy(*targetAsset) {
 				utils.IgnoreErrWriteString(sess,
-					fmt.Sprintf("Target %v matched more than 1 assets. Please be more specific\n",
-						targetAsset))
+					fmt.Sprintf("Target %v matched more than 1 assets or did not match any asset. Please be more specific.\r\n",
+						*targetAsset))
 				return
 			}
 		}
 	} else {
-		utils.IgnoreErrWriteString(sess, fmt.Sprintf("No PTY requested.\n"))
+		utils.IgnoreErrWriteString(sess, fmt.Sprintf("No PTY requested.\r\n"))
 		return
 	}
 }
