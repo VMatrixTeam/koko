@@ -57,7 +57,7 @@ func checkAuth(ctx ssh.Context, password, publicKey string) (res ssh.AuthResult)
 	case service.AuthSuccess:
 		res = ssh.AuthSuccessful
 		ctx.SetValue(model.ContextKeyUser, &user)
-		ctx.SetValue(model.ContextKeyTargetAsset, &targetAsset)
+		ctx.SetValue(model.ContextKeyTargetAsset, targetAsset)
 	case service.AuthConfirmRequired:
 		required := true
 		ctx.SetValue(model.ContextKeyConfirmRequired, &required)
