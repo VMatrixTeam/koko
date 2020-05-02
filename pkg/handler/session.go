@@ -36,7 +36,12 @@ func SessionHandler(sess ssh.Session) {
 			handler.displayBanner()
 			handler.Dispatch()
 		} else {
-			handler.searchOrProxy(*targetAsset)
+			if !handler.searchOrProxy(*targetAsset) {
+				utils.IgnoreErrWriteString(sess,
+					fmt.Sprintf("Target %v matched more than 1 assets. Please be more specific\n",
+						targetAsset))
+				return
+			}
 		}
 	} else {
 		utils.IgnoreErrWriteString(sess, fmt.Sprintf("No PTY requested.\n"))
