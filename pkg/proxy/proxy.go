@@ -173,9 +173,9 @@ func (p *ProxyServer) getCacheSSHConn() (srvConn *srvconn.ServerSSHConnection, o
 		logger.Infof("User %s reuse ssh client(%s@%s) start shell success",
 			p.User.Name, p.SystemUser.Name, p.Asset.Hostname)
 
-		reuseMsg := fmt.Sprintf(i18n.T("Reuse SSH connections (%s@%s) [Number of connections: %d]"),
-			p.SystemUser.Username, p.Asset.Hostname, cacheSSHClient.RefCount())
-		utils.IgnoreErrWriteString(p.UserConn, reuseMsg+"\r\n")
+		// reuseMsg := fmt.Sprintf(i18n.T("Reuse SSH connections (%s@%s) [Number of connections: %d]"),
+		//  	p.SystemUser.Username, p.Asset.Hostname, cacheSSHClient.RefCount())
+		// utils.IgnoreErrWriteString(p.UserConn, reuseMsg+"\r\n")
 		return srvConn, true
 	}
 	logger.Errorf("User %s did not found cache ssh client(%s@%s)",
