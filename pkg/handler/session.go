@@ -31,9 +31,14 @@ func SessionHandler(sess ssh.Session) {
 		handler := newInteractiveHandler(sess, user)
 		logger.Infof("Request %s: User %s request pty %s", handler.sess.ID(), sess.User(), pty.Term)
 		go handler.watchWinSizeChange()
-		handler.Dispatch()
+		targetAsset, ok := sess.Context().Value(model.ContextKeyTargetAsset).(*string)
+		if !ok || targetAsset == nil || *targetAsset == "" {
+			handler.Dispatch()
+		} else {
+			handler.searchOrProxy(*targetAsset)
+		}
 	} else {
-		utils.IgnoreErrWriteString(sess, "No PTY requested.\n")
+		utils.IgnoreErrWriteString(sess, fmt.Sprintf("No PTY requested.\n"))
 		return
 	}
 }
