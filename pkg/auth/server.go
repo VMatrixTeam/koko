@@ -26,14 +26,18 @@ const (
 	actionPartialAccepted = "Partial accepted"
 )
 
-func checkAuth(ctx ssh.Context, password, publicKey string) (res ssh.AuthResult) {
-	parts := strings.SplitN(ctx.User(), ":", 2)
+func splitUsername(user string) (string, *string) {
+	parts := strings.SplitN(user, ":", 2)
 	username := parts[0]
 	var targetAsset *string
 	if len(parts) > 1 {
 		targetAsset = &parts[1]
 	}
+	return username, targetAsset
+}
 
+func checkAuth(ctx ssh.Context, password, publicKey string) (res ssh.AuthResult) {
+	username, targetAsset := splitUsername(ctx.User())
 	authMethod := "publickey"
 	action := actionAccepted
 	res = ssh.AuthFailed
@@ -92,7 +96,7 @@ func CheckMFA(ctx ssh.Context, challenger gossh.KeyboardInteractiveChallenge) (r
 		return ssh.AuthFailed
 	}
 
-	username := ctx.User()
+	username, targetAsset := splitUsername(ctx.User())
 	remoteAddr, _, _ := net.SplitHostPort(ctx.RemoteAddr().String())
 	res = ssh.AuthFailed
 
@@ -127,6 +131,7 @@ func CheckMFA(ctx ssh.Context, challenger gossh.KeyboardInteractiveChallenge) (r
 			case service.AuthSuccess:
 				res = ssh.AuthSuccessful
 				ctx.SetValue(model.ContextKeyUser, &user)
+				ctx.SetValue(model.ContextKeyTargetAsset, targetAsset)
 				return
 			}
 		case "no", "n":
