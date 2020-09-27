@@ -16,8 +16,7 @@ RUN cd cmd && go build -ldflags "-X 'main.Buildstamp=`date -u '+%Y-%m-%d %I:%M:%
 
 FROM debian:stretch-slim
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gnupg dirmngr openssh-client procps curl \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends gnupg dirmngr openssh-client procps curl
 
 RUN set -ex; \
 # gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
@@ -35,7 +34,7 @@ RUN set -ex; \
 
 ENV MYSQL_MAJOR 8.0
 RUN echo "deb https://repo.mysql.com/apt/debian stretch mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
-RUN apt-get update && apt-get install -y gdb ca-certificates mysql-community-client && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gdb ca-certificates mysql-community-client
 
 ENV TZ Asia/Shanghai
 WORKDIR /opt/koko/
