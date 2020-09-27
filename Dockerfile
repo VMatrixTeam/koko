@@ -33,7 +33,7 @@ RUN set -ex; \
 	apt-key list > /dev/null
 
 ENV MYSQL_MAJOR 8.0
-RUN echo "deb https://repo.mysql.com/apt/debian stretch mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
+RUN echo "deb http://repo.mysql.com/apt/debian stretch mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 RUN apt-get update && apt-get install -y gdb ca-certificates mysql-community-client
 
 ENV TZ Asia/Shanghai
