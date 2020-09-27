@@ -7,8 +7,7 @@ ENV GO111MODULE=on
 ENV GOOS=linux
 ENV GOARCH=amd64
 ENV CGO_ENABLED=0
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-  && apk update \
+RUN apk update \
   && apk add git
 COPY go.mod go.sum ./
 RUN go mod download
@@ -16,8 +15,6 @@ COPY . .
 RUN cd cmd && go build -ldflags "-X 'main.Buildstamp=`date -u '+%Y-%m-%d %I:%M:%S%p'`' -X 'main.Githash=`git rev-parse HEAD`' -X 'main.Goversion=`go version`'" -x -o koko koko.go
 
 FROM debian:stretch-slim
-RUN sed -i  's/deb.debian.org/mirrors.163.com/g' /etc/apt/sources.list \
-    && sed -i  's/security.debian.org/mirrors.163.com/g' /etc/apt/sources.list
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends gnupg dirmngr openssh-client procps curl \
     && rm -rf /var/lib/apt/lists/*
@@ -37,9 +34,8 @@ RUN set -ex; \
 	apt-key list > /dev/null
 
 ENV MYSQL_MAJOR 8.0
-ENV MYSQL_VERSION 8.0.20-1debian9
-RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/mysql/apt/debian stretch mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
-RUN apt-get update && apt-get install -y gdb ca-certificates mysql-community-client="${MYSQL_VERSION}" && rm -rf /var/lib/apt/lists/*
+RUN echo "deb https://repo.mysql.com/apt/debian stretch mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
+RUN apt-get update && apt-get install -y gdb ca-certificates mysql-community-client && rm -rf /var/lib/apt/lists/*
 
 ENV TZ Asia/Shanghai
 WORKDIR /opt/koko/
